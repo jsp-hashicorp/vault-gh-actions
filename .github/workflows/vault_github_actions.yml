@@ -19,12 +19,12 @@ jobs:
           tlsSkipVerify: true
           token: ${{ secrets.VAULT_TOKEN }}
           secrets: |
-            secrets/data/tfvar/prefix | prefix ;
-            secrets/data/tfvar/height | height ;
-            secrets/data/tfvar/width | width;
-            secrets/data/tfvar/org | TF_ORGANIZATION;
-            secrets/data/tfvar/placeholder | placeholder;
-            secrets/data/tfvar/region | region ;
+            secrets/data/tfvar prefix | prefix ;
+            secrets/data/tfvar height | height ;
+            secrets/data/tfvar width | width;
+            secrets/data/tfvar org | TF_ORGANIZATION;
+            secrets/data/tfvar placeholder | placeholder;
+            secrets/data/tfvar region | region ;
             terraform/creds/my-user token | TF_API_TOKEN
 
   setup-tf-workspace:
