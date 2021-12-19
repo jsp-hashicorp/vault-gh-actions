@@ -39,13 +39,13 @@ jobs:
         id: workspace
         uses: reguengos/terraform-github-workspace-setup-action@master
         with:
-          organization: ${{ steps.secrets.TF_ORGANIZATION }}
+          organization: ${{ env.TF_ORGANIZATION }}
           workspace: "vault-gh-actions"
-          token: ${{ steps.secrets.TF_API_TOKEN }}
+          token: ${{ env.TF_API_TOKEN }}
           vars: '
             {
               "key": "region",
-              "value": "${{ steps.secrets.region }}",
+              "value": "${{ env.region }}",
               "sensitive": "false",
               "category": "terraform"
               
