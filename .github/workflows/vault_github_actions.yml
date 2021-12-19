@@ -18,7 +18,6 @@ jobs:
           url: http://127.0.0.1:8200
           tlsSkipVerify: true
           token: ${{ secrets.VAULT_TOKEN }}
-          exportEnv:
           secrets: |
             secrets/data/tfvar prefix | prefix ;
             secrets/data/tfvar height | height ;
@@ -28,7 +27,7 @@ jobs:
             secrets/data/tfvar region | region ;
             terraform/creds/my-user token | TF_API_TOKEN
 
-      - name: setup workspace
+      - name: setup workspace variable prefix
         id: workspace
         uses: patrontech/devops-tf-cloud-update-var@v1.0.1
         with:  
@@ -38,14 +37,16 @@ jobs:
           terraformHost: 'app.terraform.io'
           variableName: 'prefix'
           variableValue: ${{ env.prefix }}
-
-  terraform:
-    name: 2. Deploy EC2
-    needs: vault
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: setup workspace variable height
+        id: workspace
+        uses: patrontech/devops-tf-cloud-update-var@v1.0.1
+        with:  
+          workSpaceName: vault-gh-actions  
+          organizationName: ${{ env.TF_ORGANIZATION }}
+          terraformToken: ${{ env.TF_API_TOKEN }}
+          terraformHost: 'app.terraform.io'
+          variableName: 'height'
+          variableValue: ${{ env.height }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
