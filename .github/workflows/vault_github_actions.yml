@@ -28,7 +28,7 @@ jobs:
             terraform/creds/my-user token | TF_API_TOKEN
 
   setup-workspace:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: vault
     name: 2. Setup Terraform Cloud workspace
     steps:
