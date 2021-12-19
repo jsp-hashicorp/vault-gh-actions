@@ -13,7 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Import Secrets
-        id: import secret
         uses: hashicorp/vault-action@v2.4.0
         with:
           url: http://127.0.0.1:8200
