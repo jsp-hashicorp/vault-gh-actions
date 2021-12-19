@@ -37,13 +37,16 @@ jobs:
           terraformHost: 'app.terraform.io'
           variableName: 'prefix'
           variableValue: ${{ env.prefix }}
+      
+      - name: setup TF variable 
+        run: export TF_VAR_prefix=${{ env.prefix }} TF_VAR_height=${{ env.height }} TF_VAR_width=${{ env.width }} TF_VAR_region=${{ env.region }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           # terraform_version: 0.13.0:
           cli_config_credentials_token: ${{ env.TF_API_TOKEN }}
-        run: export TF_VAR_prefix=${{ env.prefix }} TF_VAR_height=${{ env.height }} TF_VAR_width=${{ env.width }} TF_VAR_region=${{ env.region }}
+        
 
       - name: Terraform Format
         id: fmt
