@@ -18,6 +18,7 @@ jobs:
           url: http://127.0.0.1:8200
           tlsSkipVerify: true
           token: ${{ secrets.VAULT_TOKEN }}
+          exportEnv: true
           secrets: |
             secrets/data/tfvar prefix | prefix ;
             secrets/data/tfvar height | height ;
@@ -27,21 +28,13 @@ jobs:
             secrets/data/tfvar region | region ;
             terraform/creds/my-user token | TF_API_TOKEN
 
-  setup-workspace:
-    runs-on: self-hosted
-    needs: vault
-    name: 2. Setup Terraform Cloud workspace
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
       - name: setup workspace
         id: workspace
         uses: patrontech/devops-tf-cloud-update-var@v1.0.1
         with:  
           workSpaceName: vault-gh-actions  
           organizationName: ${{ steps.secrets.outputs.TF_ORGANIZATION }}
-          terraformToken: ${{ steps.secrets.outputs.TF_API_TOKEN }}
+          terraformToken: ${{ steps.secrets.outpus.TF_API_TOKEN }}
           terraformHost: 'app.terraform.io'
           variableName: 'prefix'
           variableValue: ${{ steps.secrets.outputs.prefix }}
