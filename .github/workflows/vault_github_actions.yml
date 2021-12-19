@@ -48,7 +48,7 @@ jobs:
 
   terraform:
     name: 3. Deploy EC2
-    needs: setup-tf-workspace
+    needs: setup-workspace
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
