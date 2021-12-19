@@ -38,7 +38,7 @@ jobs:
           variableValue: ${{ env.prefix }}
       
       - name: setup TF variable 
-        run: export TF_VAR_prefix=${{ env.prefix }} TF_VAR_height=${{ env.height }} TF_VAR_width=${{ env.width }} TF_VAR_region=${{ env.region }}
+        run: export TF_VAR_prefix=${{ env.prefix }} && export TF_VAR_height=${{ env.height }} && export TF_VAR_width=${{ env.width }} && TF_VAR_region=${{ env.region }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
