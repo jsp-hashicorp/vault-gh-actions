@@ -40,8 +40,8 @@ jobs:
           variableValue: ${{ steps.secrets.outputs.prefix }}
 
   terraform:
-    name: 3. Deploy EC2
-    needs: setup-workspace
+    name: 2. Deploy EC2
+    needs: vault
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
