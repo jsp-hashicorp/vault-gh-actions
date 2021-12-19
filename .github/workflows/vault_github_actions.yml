@@ -41,7 +41,7 @@ jobs:
         uses: patrontech/devops-tf-cloud-update-var@v1.0.1
         with:  
           workSpaceName: vault-gh-actions  
-          organizationName: ${{ stpes.secrets.outputs.TF_ORGANIZATION }}
+          organizationName: ${{ steps.secrets.outputs.TF_ORGANIZATION }}
           terraformToken: ${{ steps.secrets.outputs.TF_API_TOKEN }}
           terraformHost: 'app.terraform.io'
           variableName: 'prefix'
