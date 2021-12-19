@@ -13,6 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Import Secrets
+        id: import secret
         uses: hashicorp/vault-action@v2.4.0
         with:
           url: http://127.0.0.1:8200
@@ -25,7 +26,7 @@ jobs:
             secrets/data/tfvar org | TF_ORGANIZATION;
             secrets/data/tfvar placeholder | placeholder;
             secrets/data/tfvar region | region ;
-            terraform/creds/my-user token | TF_API_TOKEN
+            terraform/creds/my-user token | TF_API_TOKEN 
 
       - name: setup workspace variable prefix
         uses: patrontech/devops-tf-cloud-update-var@v1.0.1
@@ -36,21 +37,16 @@ jobs:
           terraformHost: 'app.terraform.io'
           variableName: 'prefix'
           variableValue: ${{ env.prefix }}
-      - name: setup workspace variable height
-        uses: patrontech/devops-tf-cloud-update-var@v1.0.1
-        with:  
-          workSpaceName: vault-gh-actions  
-          organizationName: ${{ env.TF_ORGANIZATION }}
-          terraformToken: ${{ env.TF_API_TOKEN }}
-          terraformHost: 'app.terraform.io'
-          variableName: 'height'
-          variableValue: ${{ env.height }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           # terraform_version: 0.13.0:
           cli_config_credentials_token: ${{ env.TF_API_TOKEN }}
+        run: |
+            export TF_VAR_prefix=${{ env.prefix }}
+            export TF_VAR_height=${{ env.height }}
+            export TF_VAR_width=${{ env.width }}
 
       - name: Terraform Format
         id: fmt
