@@ -27,9 +27,27 @@ jobs:
             secrets/data/tfvar region | region ;
             terraform/creds/my-user token | TF_API_TOKEN 
 
-      - name: setup workspace variable
-        run: tfh pushvars -org ${{env.TF_ORGANIZATION}} -name vault-gh-actions -token ${{ env.TF_API_TOKEN}} -hostname https://app.terrraform.io -var 'prefix=${{ env.prefix }}'
+  setup-workspace:
+      name: 2. Vault Secrets Retrieve
+      needs: vault
+      runs-on: self-hosted
+      steps:
+      - name: setup workspace variable prefix
+        uses: patrontech/devops-tf-cloud-update-var@v1.0.1
+        with:  
+          workSpaceName: vault-gh-actions  
+          organizationName: ${{ env.TF_ORGANIZATION }}
+          terraformToken: ${{ env.TF_API_TOKEN }}
+          terraformHost: 'app.terraform.io'
+          variableName: 'prefix'
+          variableValue: ${{ env.prefix }}
+      
 
+  terraform: 
+      name: 3. Deploy EC2
+      runs-on: self-hosted
+      needs: setup-workspace
+      steps:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
