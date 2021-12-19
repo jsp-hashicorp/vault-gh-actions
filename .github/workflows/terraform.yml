@@ -19,6 +19,70 @@ jobs:
           token: ${{ secrets.VAULT_TOKEN }}
           secrets: |
             terraform/creds/my-user token | TF_API_TOKEN
+            secrets/data/tfvar/prefix | prefix 
+            secrets/data/tfvar/height | height 
+            secrets/data/tfvar/width | width
+            secrets/data/tfvar/org | TF_ORGANIZATION
+            secrets/data/tfvar/placeholder | placeholder
+            secrets/data/tfvar/region | region 
+
+  setup-tf-workspace:
+    runs-on: ubuntu-latest
+    name: Setup Terraform workspace
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: setup workspace
+        id: workspace
+        uses: reguengos/terraform-github-workspace-setup-action@master
+        with:
+          organization: ${{ steps.secrets.TF_ORGANIZATION }}
+          workspace: "vault-gh-actions"
+          token: ${{ steps.secrets.TF_API_TOKEN }}
+          vars: '
+            {
+              "key": "region",
+              "value": "${{ steps.secrets.region }}",
+              "sensitive": "false",
+              "category": "terraform"
+              
+            },
+            {
+              "key": "prefix",
+              "value": "${{ steps.secrets.prefix }}",
+              "sensitive": "false",
+              "category": "terraform"
+              
+            },
+            {
+              "key": "placeholder",
+              "value": "${{ steps.secrets.placeholder }}",
+              "sensitive": "false",
+              "category": "terraform"
+              
+            },
+            {
+              "key": "width",
+              "value": "${{ steps.secrets.width }}",
+              "sensitive": "false",
+              "category": "terraform"
+              
+            },
+            {
+              "key": "height",
+              "value": "${{ steps.secrets.height }}",
+              "sensitive": "false",
+              "category": "terraform"
+              
+            },
+            {
+              "key": "access_key_id",
+              "value": "${{ secrets.AWS_ACCESS_KEY_ID }}",
+              "sensitive": "true",
+              "category": "env"
+            }
+          '
 
   terraform:
     name: "Terraform"
