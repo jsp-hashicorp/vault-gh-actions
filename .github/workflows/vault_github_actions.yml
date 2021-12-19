@@ -13,6 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Import Secrets
+        id: import secret
         uses: hashicorp/vault-action@v2.4.0
         with:
           url: http://127.0.0.1:8200
@@ -27,18 +28,8 @@ jobs:
             secrets/data/tfvar region | region ;
             terraform/creds/my-user token | TF_API_TOKEN 
 
-      - name: setup workspace variable prefix
-        uses: patrontech/devops-tf-cloud-update-var@v1.0.1
-        with:  
-          workSpaceName: vault-gh-actions  
-          organizationName: ${{ env.TF_ORGANIZATION }}
-          terraformToken: ${{ env.TF_API_TOKEN }}
-          terraformHost: 'app.terraform.io'
-          variableName: 'prefix'
-          variableValue: ${{ env.prefix }}
-      
-      - name: setup TF variable 
-        run: export TF_VAR_prefix=${{ env.prefix }} && export TF_VAR_height=${{ env.height }} && export TF_VAR_width=${{ env.width }} && TF_VAR_region=${{ env.region }}
+      - name: setup workspace variable
+        run: tfh pushvars -org ${{env.TF_ORGANIZATION}} -name vault-gh-actions -token ${{ env.TF_API_TOKEN}} -hostname https://app.terrraform.io -var 'prefix=${{ env.prefix }}'
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
