@@ -28,6 +28,14 @@ jobs:
             secrets/data/tfvar region | region ;
             terraform/creds/my-user token | TF_API_TOKEN
 
+  setup-workspace:
+    runs-on: self-hosted
+    needs: vault
+    name: 2. Setup Terraform Cloud workspace
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: setup workspace
         id: workspace
         uses: patrontech/devops-tf-cloud-update-var@v1.0.1
@@ -40,8 +48,8 @@ jobs:
           variableValue: ${{ env.prefix }}
 
   terraform:
-    name: 2. Deploy EC2
-    needs: vault
+    name: 3. Deploy EC2
+    needs: setup-workspace
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
