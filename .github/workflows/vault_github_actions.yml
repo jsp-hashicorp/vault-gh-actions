@@ -37,7 +37,7 @@ jobs:
 
       - name: setup workspace
         id: workspace
-        uses: patrontech/devops-tf-cloud-update-var@v1.0
+        uses: patrontech/devops-tf-cloud-update-var@v1.0.1
         with:  
           workSpaceName: vault-gh-actions  
           organizationName: '{{ steps.secrets.TF_ORGANIZATION }}' 
