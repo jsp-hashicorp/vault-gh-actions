@@ -28,7 +28,6 @@ jobs:
             terraform/creds/my-user token | TF_API_TOKEN
 
       - name: setup workspace variable prefix
-        id: workspace
         uses: patrontech/devops-tf-cloud-update-var@v1.0.1
         with:  
           workSpaceName: vault-gh-actions  
@@ -38,7 +37,6 @@ jobs:
           variableName: 'prefix'
           variableValue: ${{ env.prefix }}
       - name: setup workspace variable height
-        id: workspace
         uses: patrontech/devops-tf-cloud-update-var@v1.0.1
         with:  
           workSpaceName: vault-gh-actions  
