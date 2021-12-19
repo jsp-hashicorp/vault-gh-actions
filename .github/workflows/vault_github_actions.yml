@@ -8,7 +8,7 @@ on:
 
 jobs:
   vault:
-    name: 1. Vault Secrets Retrieve
+    name: vault_gh_actions
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
@@ -27,11 +27,6 @@ jobs:
             secrets/data/tfvar region | region ;
             terraform/creds/my-user token | TF_API_TOKEN 
 
-  setup-workspace:
-      name: 2. Vault Secrets Retrieve
-      needs: vault
-      runs-on: self-hosted
-      steps:
       - name: setup workspace variable prefix
         uses: patrontech/devops-tf-cloud-update-var@v1.0.1
         with:  
@@ -42,12 +37,46 @@ jobs:
           variableName: 'prefix'
           variableValue: ${{ env.prefix }}
       
+      - name: setup workspace variable height
+        uses: patrontech/devops-tf-cloud-update-var@v1.0.1
+        with:  
+          workSpaceName: vault-gh-actions  
+          organizationName: ${{ env.TF_ORGANIZATION }}
+          terraformToken: ${{ env.TF_API_TOKEN }}
+          terraformHost: 'app.terraform.io'
+          variableName: 'height'
+          variableValue: ${{ env.height }}
 
-  terraform: 
-      name: 3. Deploy EC2
-      runs-on: self-hosted
-      needs: setup-workspace
-      steps:
+      - name: setup workspace variable width
+        uses: patrontech/devops-tf-cloud-update-var@v1.0.1
+        with:  
+          workSpaceName: vault-gh-actions  
+          organizationName: ${{ env.TF_ORGANIZATION }}
+          terraformToken: ${{ env.TF_API_TOKEN }}
+          terraformHost: 'app.terraform.io'
+          variableName: 'width'
+          variableValue: ${{ env.width }}
+
+      - name: setup workspace variable placeholder
+        uses: patrontech/devops-tf-cloud-update-var@v1.0.1
+        with:  
+          workSpaceName: vault-gh-actions  
+          organizationName: ${{ env.TF_ORGANIZATION }}
+          terraformToken: ${{ env.TF_API_TOKEN }}
+          terraformHost: 'app.terraform.io'
+          variableName: 'placeholder'
+          variableValue: ${{ env.placeholder }}
+
+      - name: setup workspace variable region
+        uses: patrontech/devops-tf-cloud-update-var@v1.0.1
+        with:  
+          workSpaceName: vault-gh-actions  
+          organizationName: ${{ env.TF_ORGANIZATION }}
+          terraformToken: ${{ env.TF_API_TOKEN }}
+          terraformHost: 'app.terraform.io'
+          variableName: 'region'
+          variableValue: ${{ env.region }}
+     
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
