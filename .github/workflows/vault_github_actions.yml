@@ -33,11 +33,11 @@ jobs:
         uses: patrontech/devops-tf-cloud-update-var@v1.0.1
         with:  
           workSpaceName: vault-gh-actions  
-          organizationName: ${{ steps.secrets.outputs.TF_ORGANIZATION }}
-          terraformToken: ${{ steps.secrets.outpus.TF_API_TOKEN }}
+          organizationName: ${{ env.TF_ORGANIZATION }}
+          terraformToken: ${{ env.TF_API_TOKEN }}
           terraformHost: 'app.terraform.io'
           variableName: 'prefix'
-          variableValue: ${{ steps.secrets.outputs.prefix }}
+          variableValue: ${{ env.prefix }}
 
   terraform:
     name: 2. Deploy EC2
