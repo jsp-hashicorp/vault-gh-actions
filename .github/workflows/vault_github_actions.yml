@@ -27,7 +27,7 @@ jobs:
             secrets/data/tfvar region | region ;
             terraform/creds/my-user token | TF_API_TOKEN
 
-  setup-tf-workspace:
+  setup-workspace:
     runs-on: ubuntu-latest
     needs: vault
     name: 2. Setup Terraform Cloud workspace
@@ -37,57 +37,17 @@ jobs:
 
       - name: setup workspace
         id: workspace
-        uses: reguengos/terraform-github-workspace-setup-action@master
-        with:
-          organization: ${{ steps.secrets.TF_ORGANIZATION }}
-          workspace: "vault-gh-actions"
-          token: ${{ env.TF_API_TOKEN }}
-          vars: '
-            {
-              "key": "region",
-              "value": "${{ steps.secrets.region }}",
-              "sensitive": "false",
-              "category": "terraform"
-              
-            },
-            {
-              "key": "prefix",
-              "value": "${{ steps.secrets.prefix }}",
-              "sensitive": "false",
-              "category": "terraform"
-              
-            },
-            {
-              "key": "placeholder",
-              "value": "${{ steps.secrets.placeholder }}",
-              "sensitive": "false",
-              "category": "terraform"
-              
-            },
-            {
-              "key": "width",
-              "value": "${{ steps.secrets.width }}",
-              "sensitive": "false",
-              "category": "terraform"
-              
-            },
-            {
-              "key": "height",
-              "value": "${{ steps.secrets.height }}",
-              "sensitive": "false",
-              "category": "terraform"
-              
-            },
-            {
-              "key": "access_key_id",
-              "value": "${{ secrets.AWS_ACCESS_KEY_ID }}",
-              "sensitive": "true",
-              "category": "env"
-            }
-          '
+        uses: patrontech/devops-tf-cloud-update@v1.0   
+        with:  
+          workSpaceName: vault-gh-actions  
+          organizationName: '{{ steps.secrets.TF_ORGANIZATION }}' 
+          terraformToken: '{{ steps.secrets.TF_API_TOKEN }}'
+          terraformHost: 'app.terraform.io'
+          variableName: 'prefix'
+          variableValue: '{{ steps.secrets.prefix }}'
 
   terraform:
-    name: "Deploy EC2"
+    name: 3. Deploy EC2
     needs: setup-tf-workspace
     runs-on: ubuntu-latest
     steps:
