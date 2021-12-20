@@ -25,7 +25,8 @@ jobs:
             secrets/data/tfvar width | width;
             secrets/data/tfvar org | TF_ORGANIZATION;
             secrets/data/tfvar placeholder | placeholder;
-            secrets/data/tfvar region | region 
+            secrets/data/tfvar region | region ;
+            terraform/creds/my-user token | TF_API_TOKEN
 
       - name: Setup Workspace variable
         id: set_var
@@ -44,7 +45,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
