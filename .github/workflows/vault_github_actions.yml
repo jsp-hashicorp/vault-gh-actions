@@ -41,6 +41,7 @@ jobs:
   terraform: 
     name: 2. EC2 인스턴스 배포
     runs-on: ubuntu-latest
+    needs: vault
     steps:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
