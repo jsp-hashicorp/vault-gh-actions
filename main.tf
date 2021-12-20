@@ -174,7 +174,7 @@ resource "null_resource" "configure-ss-app" {
       "sudo systemctl start apache2",
       "sudo chown -R ubuntu:ubuntu /var/www/html",
       "chmod +x *.sh",
-      "PLACEHOLDER=${var.placeholder} WIDTH=${var.width} HEIGHT=${var.height} ./deploy_app.sh",
+      "PLACEHOLDER=${var.placeholder} WIDTH=${var.width} HEIGHT=${var.height} PREFIX=${var.prefix} REGION=${var.region} ./deploy_app.sh",
     ]
 
     connection {
