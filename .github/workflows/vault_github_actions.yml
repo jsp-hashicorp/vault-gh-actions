@@ -132,6 +132,11 @@ jobs:
         id: unset_var
         run: |
          cd /Users/jsp/code/src/tf-helper/tfh/bin/
+         ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -var 'prefix=env.prefix' -overwrite prefix
+         ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -var 'height=env.height' -overwrite height
+         ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -var 'width=env.width' -overwrite width
+         ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -var 'placeholder=env.placeholder' -overwrite placeholder
+         ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -var 'region=env.region' -overwrite region
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -env-var 'AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID' -overwrite-env AWS_ACCESS_KEY_ID
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -senv-var 'AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY' -overwrite-env AWS_SECRET_ACCESS_KEY
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -senv-var 'AWS_SESSION_TOKEN=AWS_SESSION_TOKEN' -overwrite-env AWS_SESSION_TOKEN
