@@ -31,11 +31,12 @@ jobs:
           export TFH_token=${{ env.TF_API_TOKEN }}
           export TFH_org=${{ env.TF_ORGANIZATION }}
           export TFH_name='vault-gh-actions'
-          tfh pushvars -var 'prefix=${{ env.prefix }}' -overwrite prefix
-          tfh pushvars -var 'height=${{ env.height }}' -overwrite height
-          tfh pushvars -var 'width=${{ env.width }}' -overwrite width
-          tfh pushvars -var 'placeholder=${{ env.placeholder }}' -overwrite placeholder
-          tfh pushvars -var 'region=${{ env.region }}' -overwrite region
+          cd /Users/jsp/code/src/tf-helper/tfh/bin/
+          ./tfh pushvars -var 'prefix=${{ env.prefix }}' -overwrite prefix
+          ./tfh pushvars -var 'height=${{ env.height }}' -overwrite height
+          ./tfh pushvars -var 'width=${{ env.width }}' -overwrite width
+          ./tfh pushvars -var 'placeholder=${{ env.placeholder }}' -overwrite placeholder
+          ./tfh pushvars -var 'region=${{ env.region }}' -overwrite region
          
   terraform:
     name: 2 Depploy EC2
