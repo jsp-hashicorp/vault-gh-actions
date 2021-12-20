@@ -31,15 +31,8 @@ jobs:
       - name: Setup Workspace variable
         id: set_var
         run: |
-          export TFH_token=${{ jobs.import.secrets.TF_API_TOKEN }}  ;
-          export TFH_org=${{ env.TF_ORGANIZATION }} ;
-          export TFH_name='vault-gh-actions' ;
-          cd /Users/jsp/code/src/tf-helper/tfh/bin/
-          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }}-var 'prefix=${{ env.prefix }}' -overwrite prefix
-          ./tfh pushvars -var 'height=${{ env.height }}' -overwrite height
-          ./tfh pushvars -var 'width=${{ env.width }}' -overwrite width
-          ./tfh pushvars -var 'placeholder=${{ env.placeholder }}' -overwrite placeholder
-          ./tfh pushvars -var 'region=${{ env.region }}' -overwrite region
+         cd /Users/jsp/code/src/tf-helper/tfh/bin/
+         ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }}-var 'prefix=${{ env.prefix }}' -overwrite prefix
          
   terraform:
     name: 2 Depploy EC2
