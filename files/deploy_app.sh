@@ -5,7 +5,7 @@
 
 cat << EOM > /var/www/html/index.html
 <html>
-  <head><title>Meow!</title></head>
+  <head><title>HashiCorp Snapshot - Vault Github Actions</title></head>
   <body>
   <div style="width:800px;margin: 0 auto">
 
