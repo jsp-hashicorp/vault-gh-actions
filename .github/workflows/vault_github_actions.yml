@@ -7,12 +7,12 @@ on:
   pull_request:
 
 jobs:
-  vault:
+  pre-vault:
     name: 1. 시크릿 조회 및 TFC 변수 설정
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-      - name: Import Secrets
+      - name: 1.1 Import Secrets
         id: import
         uses: hashicorp/vault-action@v2.4.0
         with:
@@ -26,9 +26,12 @@ jobs:
             secrets/data/tfvar org | TF_ORGANIZATION;
             secrets/data/tfvar placeholder | placeholder;
             secrets/data/tfvar region | region ;
-            terraform/creds/my-user token | TF_API_TOKEN
+            terraform/creds/my-user token | TF_API_TOKEN ;
+            aws/sts/vault-demo-jsp access_key | AWS_ACCESS_KEY_ID ;
+            aws/sts/vault-demo-jsp secret_key | AWS_SECRET_ACCESS_KEY ;
+            aws/sts/vault-demo-jsp security_token | AWS_SESSION_TOKEN
 
-      - name: Setup Workspace variable
+      - name: 1.2 Setup TFC Workspace variable
         id: set_var
         run: |
          cd /Users/jsp/code/src/tf-helper/tfh/bin/
@@ -37,11 +40,14 @@ jobs:
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -var 'width=${{ env.width }}' -overwrite width
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -var 'placeholder=${{ env.placeholder }}' -overwrite placeholder
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -var 'region=${{ env.region }}' -overwrite region
+         ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -env-var 'AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}' -overwrite-env AWS_ACCESS_KEY_ID
+         ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -senv-var 'AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}' -overwrite-env AWS_SECRET_ACCESS_KEY
+         ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -senv-var 'AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}' -overwrite-env AWS_SESSION_TOKEN
   
   terraform: 
     name: 2. EC2 인스턴스 배포
     runs-on: ubuntu-latest
-    needs: vault
+    needs: pre-vault
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -104,3 +110,29 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
+
+  post-vault:
+    name: 3. 시크릿 회수 및 TFC 변수 설정
+    runs-on: self-hosted
+    needs: terraform
+    steps:
+      - uses: actions/checkout@v2
+      - name: 3.1 Import Secrets
+        id: reimport
+        uses: hashicorp/vault-action@v2.4.0
+        with:
+          url: http://127.0.0.1:8200
+          tlsSkipVerify: true
+          token: ${{ secrets.VAULT_TOKEN }}
+          secrets: |
+            secrets/data/tfvar org | TF_ORGANIZATION;
+            terraform/creds/my-user token | TF_API_TOKEN ;
+
+      - name: 3.2 Remove TFC Workspace variable
+        id: unset_var
+        run: |
+         cd /Users/jsp/code/src/tf-helper/tfh/bin/
+         ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -env-var 'AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID' -overwrite-env AWS_ACCESS_KEY_ID
+         ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -senv-var 'AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY' -overwrite-env AWS_SECRET_ACCESS_KEY
+         ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -senv-var 'AWS_SESSION_TOKEN=AWS_SESSION_TOKEN' -overwrite-env AWS_SESSION_TOKEN
+  
