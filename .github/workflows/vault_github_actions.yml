@@ -32,5 +32,5 @@ jobs:
         id: set_var
         run: |
          cd /Users/jsp/code/src/tf-helper/tfh/bin/
-         ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }}-var 'prefix=${{ env.prefix }}' -overwrite prefix
+         ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -var 'prefix=${{ env.prefix }}' -overwrite prefix
          
