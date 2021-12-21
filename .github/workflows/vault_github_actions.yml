@@ -109,7 +109,7 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve
+        run: terraform apply
 
   post-vault:
     name: 3. 시크릿 회수 및 TFC 변수 재설정
@@ -118,7 +118,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: 3.2 시크릿 조회
+      - name: 3.1 시크릿 조회
         id: reimport
         uses: hashicorp/vault-action@v2.4.0
         with:
@@ -130,11 +130,11 @@ jobs:
             terraform/creds/my-user token | TF_API_TOKEN ;
             secrets/data/tfvar sts_prefix | STS_PREFIX 
       
-      - name: 3.3 AWS Access key 회수 및 TFC 환경 변수 초기화
+      - name: 3.2 AWS Access key 회수 및 TFC 환경 변수 초기화
         id: unset_var
         run: |
          export VAULT_ADDR=http://127.0.0.1:8200
-         export VAULT_TOKEN = ${{ secrets.VAULT_TOKEN }}
+         export VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}
          vault lease revoke -sync -prefix ${{ env.STS_PREFIX }}
          cd /Users/jsp/code/src/tf-helper/tfh/bin/
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -var 'prefix=env.prefix' -overwrite prefix
