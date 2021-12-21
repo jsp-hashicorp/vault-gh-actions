@@ -12,7 +12,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-      - name: 1.1 시크릿 조회
+      - name: 1.1 시크릿 조회 및 생성
         id: import
         uses: hashicorp/vault-action@v2.4.0
         with:
@@ -52,7 +52,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
-      - name: 2.1 시크릿 조회
+      - name: 2.1 임시 작업 토큰 생성
         id: import
         uses: hashicorp/vault-action@v2.4.0
         with:
@@ -128,7 +128,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: 3.1 시크릿 조회
+      - name: 3.1 임시 작업 토큰 생성
         id: reimport
         uses: hashicorp/vault-action@v2.4.0
         with:
@@ -140,7 +140,7 @@ jobs:
             terraform/creds/my-user token | TF_API_TOKEN ;
             secrets/data/tfvar sts_prefix | STS_PREFIX 
       
-      - name: 3.2 AWS Access key 회수 및 TFC 환경 변수 초기화
+      - name: 3.2 임시 계정 회수 (TF API TOKEN, AWS access key) 및 TFC 환경 변수 초기화
         id: unset_var
         run: |
          cd /Users/jsp/code/src/tf-helper/tfh/bin/
