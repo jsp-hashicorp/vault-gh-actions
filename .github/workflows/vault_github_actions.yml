@@ -46,7 +46,7 @@ jobs:
           
   terraform: 
     name: 2. EC2 인스턴스 배포
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: pre-vault
     steps:
       - name: Checkout
