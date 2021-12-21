@@ -7,7 +7,7 @@ cat << EOM > /var/www/html/index.html
 <html>
   <head><title>HashiCorp Snapshot - Vault Github Actions</title></head>
   <body>
-  <div style="width:800px;margin: 0 auto">
+  <div>
 
   <!-- BEGIN -->
   <center><img src="${PLACEHOLDER}" width="${WIDTH} height="${HEIGHT}"></img></center>
