@@ -12,7 +12,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-      - name: 1.1 Import Secrets
+      - name: 1.1 시크릿 조회
         id: import
         uses: hashicorp/vault-action@v2.4.0
         with:
@@ -29,10 +29,9 @@ jobs:
             terraform/creds/my-user token | TF_API_TOKEN ;
             aws/sts/vault-demo-jsp access_key | AWS_ACCESS_KEY_ID ;
             aws/sts/vault-demo-jsp secret_key | AWS_SECRET_ACCESS_KEY ;
-            aws/sts/vault-demo-jsp security_token | AWS_SESSION_TOKEN ;
-            aws/sts/vault-demo-jsp lease_id | AWS_LEASE_ID
+            aws/sts/vault-demo-jsp security_token | AWS_SESSION_TOKEN 
 
-      - name: 1.2 Setup TFC Workspace variable
+      - name: 1.2 TFC Workspace 변수 설정
         id: set_var
         run: |
          cd /Users/jsp/code/src/tf-helper/tfh/bin/
@@ -44,19 +43,7 @@ jobs:
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -env-var 'AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}' -overwrite-env AWS_ACCESS_KEY_ID
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -senv-var 'AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}' -overwrite-env AWS_SECRET_ACCESS_KEY
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -senv-var 'AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}' -overwrite-env AWS_SESSION_TOKEN
-
-      - name: 1.3 Save Artifact - lease_id
-        shell: bash
-        run: |
-         echo ${{ env.AWS_LEASE_ID}} > lease_id.txt
-
-      - name: 1.4 Upload - lease_id
-        uses: actions/upload-artifact@v2
-        with:
-          name: lease_id
-          path: share/lease_id.txt
-         
-    
+          
   terraform: 
     name: 2. EC2 인스턴스 배포
     runs-on: ubuntu-latest
@@ -131,12 +118,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: 3.1. Download lease_id for job post-vault
-        uses: actions/download-artifact@v2
-        with:
-          name: lease_id
-
-      - name: 3.2 Import Secrets
+      - name: 3.2 시크릿 조회
         id: reimport
         uses: hashicorp/vault-action@v2.4.0
         with:
@@ -146,19 +128,14 @@ jobs:
           secrets: |
             secrets/data/tfvar org | TF_ORGANIZATION;
             terraform/creds/my-user token | TF_API_TOKEN ;
+            secrets/data/tfvar sts_prefix | STS_PREFIX 
       
-      - name: 3.3 Revoke AWS access_key, secret_key
-        id: Revoke
-        shell: bash
-        run: |
-           value = `cat lease_id.txt`
-           export VAULT_ADDR=http://127.0.0.1:8200
-           export VAULT_TOKEN = ${{ secrets.VAULT_TOKEN }}
-           vault lease revoke -sync $value
-
-      - name: 3.4 Remove TFC Workspace variable
+      - name: 3.3 AWS Access key 회수 및 TFC 환경 변수 초기화
         id: unset_var
         run: |
+         export VAULT_ADDR=http://127.0.0.1:8200
+         export VAULT_TOKEN = ${{ secrets.VAULT_TOKEN }}
+         vault lease revoke -sync -prefix ${{ env.STS_PREFIX }}
          cd /Users/jsp/code/src/tf-helper/tfh/bin/
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -var 'prefix=env.prefix' -overwrite prefix
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -var 'height=env.height' -overwrite height
