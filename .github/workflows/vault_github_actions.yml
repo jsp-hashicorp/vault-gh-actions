@@ -30,7 +30,7 @@ jobs:
             aws/sts/vault-demo-jsp access_key | AWS_ACCESS_KEY_ID ;
             aws/sts/vault-demo-jsp secret_key | AWS_SECRET_ACCESS_KEY ;
             aws/sts/vault-demo-jsp security_token | AWS_SESSION_TOKEN ;
-            aws/sts/vault-demo-jsp lease_id > post_vault_lease_id.txt
+            aws/sts/vault-demo-jsp lease_id | AWS_LEASE_ID
 
       - name: 1.2 Setup TFC Workspace variable
         id: set_var
@@ -44,6 +44,20 @@ jobs:
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -env-var 'AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}' -overwrite-env AWS_ACCESS_KEY_ID
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -senv-var 'AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}' -overwrite-env AWS_SECRET_ACCESS_KEY
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -senv-var 'AWS_SESSION_TOKEN=${{ env.AWS_SESSION_TOKEN }}' -overwrite-env AWS_SESSION_TOKEN
+
+      - name: 1.3 Save Artifact - lease_id
+        uses: actions/upload-artifact@v2
+        with:
+          name: leasd id upload
+          path: share
+
+      - name: 1.4 Upload - lease_id
+        uses: actions/upload-artifact@v2
+        with:
+          name: leasd id upload
+          path: share
+
+         
     
   terraform: 
     name: 2. EC2 인스턴스 배포
