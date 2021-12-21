@@ -51,12 +51,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - name: 2.1 시크릿 조회
+        id: import
+        uses: hashicorp/vault-action@v2.4.0
+        with:
+          url: http://127.0.0.1:8200
+          tlsSkipVerify: true
+          token: ${{ secrets.VAULT_TOKEN }}
+          secrets: |
+            terraform/creds/my-user token | TF_API_TOKEN
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           # terraform_version: 0.13.0:
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          cli_config_credentials_token: ${{ env.TF_API_TOKEN }}
      
       - name: Terraform Format
         id: fmt
