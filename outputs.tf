@@ -6,3 +6,4 @@ output "demo_app_url" {
 output "demo_app_ip" {
   value = "http://${aws_eip.snapshot.public_ip}"
 }
+ 
