@@ -145,7 +145,7 @@ policies             ["default","ro"]
 다음 Repo를 참고하여 Terraform Helper를 구성하여, Terraform Cloud 상의 변수 설정 시 사용.<br>
 [The Terraform Helper](https://github.com/hashicorp-community/tf-helper)
 
-사용법 또한 위 링크 상의 문서 참고. 금번 데모의 경우 pushvar
+사용법 또한 위 링크 상의 문서 참고. 금번 데모의 경우 [pushvar 기능](https://github.com/hashicorp-community/tf-helper/blob/release/tfh/usr/share/doc/tfh/tfh_pushvars.md) 사용
 
 
 ### 4. Github Actions 구성
