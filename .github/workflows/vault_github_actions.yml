@@ -143,7 +143,7 @@ jobs:
       - name: 3.2 임시 계정 회수 (TF API TOKEN, AWS access key) 및 TFC 환경 변수 초기화
         id: unset_var
         run: |
-         cd /Users/jsp/code/src/tf-helper/tfh/bin/
+         cd /Users/jsp/code/src/tf-helper/tfh/bin/ 
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -var 'prefix=env.prefix' -overwrite prefix
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -var 'height=env.height' -overwrite height
          ./tfh pushvars -org ${{ env.TF_ORGANIZATION }} -name 'vault-gh-actions' -token ${{ env.TF_API_TOKEN }} -var 'width=env.width' -overwrite width

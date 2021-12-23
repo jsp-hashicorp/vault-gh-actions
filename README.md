@@ -235,7 +235,22 @@ pre-vault:
 ```
 
 ## 데모
-Terraform Configuration Template을 수정하고 push 하게 되면, GitHub Actions가 동작하면서 다음과 같이 동작한다.
+Terraform Configuration Template을 수정하고 push 하게 되면, GitHub Actions가 동작하면서 다음과 같이 동작한다.<br>
+시연 시 main.tf상의 `aws_vpc` 리소스에 다음과 같이 Tag값을 추가 후 Commit & Push 할 것.
+```hcl
+resource "aws_vpc" "snapshot" {
+  cidr_block           = var.address_space
+  enable_dns_hostnames = true
+
+  tags = {
+    name = "${var.prefix}-vpc-${var.region}"
+    environment = "snapshot"
+    owner = "test"
+    ttl = "48"
+  }
+}
+```
+
 1. 시크릿 조회 및 TFC 변수 설정
    1. Terraform Cloud 상의 Workspace 접속을 위한 Terraform API Token을 생성
    2. 해당 Token을 사용하여 각종 변수 설정
