@@ -19,7 +19,7 @@ resource "aws_vpc" "snapshot" {
 
   tags = {
     name = "${var.prefix}-vpc-${var.region}"
-    environment = "lge_demo"
+    environment = "modu_demo"
     owner = "jsp@hashicorp.com"
     ttl = "48"
   }
