@@ -11,7 +11,9 @@ provider "aws" {
   region  = var.region
 }
 
-# 데모 시 VPC Tag 추가 : owner, ttl
+# 데모 시 VPC Tag 추가 : owner, ttl 
+#     owner = "jsp@hashicorp.com"
+#    ttl = "48"
 
 resource "aws_vpc" "snapshot" {
   cidr_block           = var.address_space
@@ -19,9 +21,7 @@ resource "aws_vpc" "snapshot" {
 
   tags = {
     name = "${var.prefix}-vpc-${var.region}"
-    environment = "modu_demo"
-    owner = "jsp@hashicorp.com"
-    ttl = "48"
+    environment = "test"
   }
 }
 
