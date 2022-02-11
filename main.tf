@@ -21,7 +21,7 @@ resource "aws_vpc" "snapshot" {
 
   tags = {
     name = "${var.prefix}-vpc-${var.region}"
-    environment = "test1"
+    environment = "secdemo"
   }
 }
 
